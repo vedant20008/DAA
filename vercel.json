@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "streampulse-daa",
+  "framework": null,
   "cleanUrls": true,
   "headers": [
     {
