@@ -3,8 +3,6 @@
    Design System: Netflix + Spotify + Letterboxd Aesthetic
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap');
-
 :root {
   /* Brand Accents */
   --netflix-red: #E50914;
