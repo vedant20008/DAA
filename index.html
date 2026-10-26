@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Netflix/Spotify Recommendation Algorithms Choose Content for You | DAA Project</title>
+  <meta name="description" content="Academic recommendation systems laboratory for Design and Analysis of Algorithms (DAA): Simon Funk SVD, High-D Audio Vector Space, Spotify Annoy Trees, Top-K Min-Heap, and Multi-Armed Contextual Bandits.">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/visualizers.css">
+</head>
+<body>
+
+  <!-- ====================================================================
+       CONSUMER TOP NAVIGATION BAR
+       ==================================================================== -->
+  <header class="consumer-navbar">
+    <div class="brand-wrapper" id="brandHomeBtn">
+      <div class="brand-academic-badge">CS-DAA</div>
+      <div class="brand-titles-col">
+        <div class="brand-logo-text">How Netflix/Spotify Recommendation Algorithms Choose Content for You</div>
+        <div class="brand-tagline-pill">Design &amp; Analysis of Algorithms (DAA) · Live Academic Laboratory</div>
+      </div>
+    </div>
+
+    <!-- Consumer Nav Menu -->
+    <nav class="nav-links-menu" aria-label="Project Navigation">
+      <button class="nav-menu-btn active" data-view="foryou" id="navForYou">
+        <span>🍿</span> Recommendation Feed
+      </button>
+      <button class="nav-menu-btn" data-view="search" id="navSearch">
+        <span>🔍</span> Search Catalog
+      </button>
+      <button class="nav-menu-btn" data-view="profile" id="navProfile">
+        <span>🧬</span> Taste DNA
+      </button>
+    </nav>
+
+    <!-- Right Actions -->
+    <div class="nav-right-actions">
+      <button class="btn-engine-portal" id="btnNavViva" title="Launch Fullscreen Viva Defense Presentation Deck">
+        <span>📽️</span> VIVA DEFENSE
+      </button>
+      <a href="report.html" target="_blank" class="choice-pill-btn" style="text-decoration: none; color: #fff; font-size: 0.8rem; padding: 0.45rem 0.95rem; display: inline-flex; align-items: center; gap: 0.35rem;" title="View IEEE Research Publication Report">
+        <span>📄</span> REPORT
+      </a>
+      <div class="user-avatar-badge" id="btnUserMenu" title="Active Student Profile">
+        <div class="avatar-initial" id="navUserInitial">A</div>
+        <span id="navUserName" style="font-weight: 600;">Alex</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       MAIN CONSUMER CONTENT CONTAINER
+       ==================================================================== -->
+  <main class="consumer-main-content">
+
+    <!-- ------------------------------------------------------------------
+         VIEW 1: FOR YOU (Personalized Feed)
+         ------------------------------------------------------------------ -->
+    <section class="consumer-view-pane active" id="view-foryou">
+      <!-- Hero Welcome Banner -->
+      <div class="consumer-hero-banner">
+        <div style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <span class="course-pill">CS-DAA · Academic Capstone Laboratory</span>
+          <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-cyan);">Algorithm Complexity &amp; Optimization</span>
+        </div>
+        <h1 class="consumer-hero-heading" style="font-size: 2.15rem; line-height: 1.25; margin-bottom: 0.7rem;">
+          How Netflix/Spotify Recommendation Algorithms Choose Content for You
+        </h1>
+        <p class="consumer-hero-sub" style="max-width: 820px; font-size: 0.95rem; line-height: 1.6;">
+          An interactive laboratory demonstrating how streaming platforms evaluate massive catalogs in sub-15ms. Implements Simon Funk SVD ($O(\text{Epochs} \cdot |R_{\text{obs}}| \cdot K)$), Spotify 6D Acoustic Vector Space, Spotify Annoy Random Projection Trees ($O(T \cdot D \log N)$), Top-$K$ Bounded Min-Heaps ($O(N \log K)$), and Contextual Bandits ($O(\log T)$ regret).
+        </p>
+
+        <!-- Media Switcher & Quick Actions -->
+        <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem; flex-wrap: wrap; align-items: center;">
+          <button class="choice-pill-btn active" id="btnFeedMovies" style="font-weight: 700;">🎬 Netflix Video Mode</button>
+          <button class="choice-pill-btn" id="btnFeedMusic" style="font-weight: 700;">🎵 Spotify Audio Mode</button>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           TODAY'S BEST CONTENT: DAILY ALGORITHMIC SPOTLIGHT
+           "How Netflix & Spotify Algorithms Select Today's Best Content For You"
+           ================================================================ -->
+      <section class="daily-spotlight-section" id="dailySpotlightSection">
+        <div class="daily-spotlight-header">
+          <div class="daily-spotlight-meta">
+            <div class="daily-pulse-badge">
+              <span class="daily-pulse-dot"></span>
+              <span id="dailyDateDisplay">TODAY'S SELECTION · OCTOBER 2026</span>
+            </div>
+            <h2 class="daily-spotlight-title">
+              <span>⚡</span> Today's Best Content For You
+            </h2>
+            <p class="daily-spotlight-sub">
+              How the algorithm selects today's highlights: Evaluating real-time Bayesian acclaim, Simon Funk SVD latent factor alignment, and 24h streaming momentum across the catalog.
+            </p>
+          </div>
+          <div class="daily-spotlight-actions">
+            <span class="live-sync-indicator" id="liveSyncStatus" style="font-family: var(--font-mono); font-size: 0.72rem; padding: 0.3rem 0.65rem; border-radius: 100px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; display: inline-flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+              <span id="liveSyncStatusText">LIVE ONLINE SYNCED</span>
+            </span>
+            <button class="choice-pill-btn active daily-filter-btn" data-daily-filter="all">🔥 All Best</button>
+            <button class="choice-pill-btn daily-filter-btn" data-daily-filter="movies">🎬 Movies</button>
+            <button class="choice-pill-btn daily-filter-btn" data-daily-filter="music">🎵 Songs</button>
+            <button class="btn-onboarding-primary" id="btnLiveSyncOnline" style="font-size: 0.8rem; padding: 0.45rem 1rem; background: linear-gradient(135deg, #0284c7, #2563eb); border: none;">
+              🌐 Live Online Check
+            </button>
+            <button class="choice-pill-btn" id="btnRescoreToday" style="font-size: 0.8rem; padding: 0.45rem 1rem;">
+              ↺ Re-Score
+            </button>
+          </div>
+        </div>
+
+        <!-- Featured Spotlight Cards (Today's #1 Movie & Today's #1 Song) -->
+        <div class="daily-featured-grid" id="dailyFeaturedGrid">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- ================================================================
+             GLOBAL LIVE TOP 25 CHARTS (MOVIES & SONGS)
+             Real-time feeds evaluated by Netflix Funk SVD & Spotify 6D Space
+             ================================================================ -->
+        <div class="top25-charts-container" id="top25ChartsSection">
+          <div class="top25-header-bar">
+            <div class="top25-title-block">
+              <div class="top25-badge-pill">
+                <span class="top25-live-dot"></span>
+                <span id="top25LiveStatusBadge">VERIFIED LIVE CHARTS · 25 MOVIES &amp; 25 SONGS</span>
+              </div>
+              <h3 class="top25-heading">
+                <span>📈</span> Live Top 25 Global Charts (Movies &amp; Songs)
+              </h3>
+              <p class="top25-description">
+                Real-time official chart positions (#1 through #25) mapped against Netflix Latent Factor Matrix Factorization ($K=20$) and Spotify 6D Acoustic Vector Cosine Metric.
+              </p>
+            </div>
+
+            <!-- Top 25 Quick Controls -->
+            <div class="top25-toolbar">
+              <!-- Search Filter within Top 25 -->
+              <div class="top25-search-box">
+                <span class="top25-search-icon">🔍</span>
+                <input type="text" id="top25SearchInput" placeholder="Filter chart titles, artists, genres..." aria-label="Filter Top 25 Charts">
+              </div>
+
+              <!-- View Layout Switcher -->
+              <div class="top25-view-switch">
+                <button class="top25-switch-btn active" id="btnTop25CardView" title="Visual Cards View">
+                  <span>🎴</span> Cards
+                </button>
+                <button class="top25-switch-btn" id="btnTop25ListView" title="Ranked High-Density Table">
+                  <span>📋</span> Table
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Primary Category Tabs -->
+          <div class="top25-nav-tabs">
+            <button class="top25-nav-tab active" data-chart="split" id="tabChartSplit">
+              <span>🔀</span> Side-by-Side Dual View <span class="tab-chip">25 + 25</span>
+            </button>
+            <button class="top25-nav-tab" data-chart="movies" id="tabChartMovies">
+              <span>🎬</span> Top 25 Movies Today <span class="tab-chip">25</span>
+            </button>
+            <button class="top25-nav-tab" data-chart="songs" id="tabChartSongs">
+              <span>🎵</span> Top 25 Songs Today <span class="tab-chip">25</span>
+            </button>
+            <button class="top25-nav-tab" data-chart="combined" id="tabChartCombined">
+              <span>⚡</span> Combined Top 25 Leaderboard <span class="tab-chip">25</span>
+            </button>
+          </div>
+
+          <!-- Active Chart Results Viewport -->
+          <div class="top25-results-viewport" id="top25ResultsViewport">
+            <!-- Dynamically populated by bundle.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Feed Shelf 1: TOP PICKS FOR YOU -->
+      <div class="shelf-container">
+        <div class="shelf-header">
+          <div>
+            <h2 class="shelf-title"><span>🔥</span> Top Picks For You</h2>
+            <p class="shelf-subtitle">Ranked by Simon Funk SVD latent factor predictions and genre affinity.</p>
+          </div>
+        </div>
+        <div class="cards-carousel-row" id="shelfTopPicks">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Feed Shelf 2: BECAUSE YOU LIKED... -->
+      <div class="shelf-container">
+        <div class="shelf-header">
+          <div>
+            <h2 class="shelf-title" id="shelfBecauseLikedTitle"><span>💡</span> Because You Liked Inception</h2>
+            <p class="shelf-subtitle">Deep content vector similarity based on high-affinity genre traits.</p>
+          </div>
+        </div>
+        <div class="cards-carousel-row" id="shelfBecauseLiked">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Feed Shelf 3: TRENDING FOR YOUR TASTE -->
+      <div class="shelf-container">
+        <div class="shelf-header">
+          <div>
+            <h2 class="shelf-title"><span>📈</span> Trending For Your Taste</h2>
+            <p class="shelf-subtitle">High global acclaim titles matching your core demographic preferences.</p>
+          </div>
+        </div>
+        <div class="cards-carousel-row" id="shelfTrending">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Feed Shelf 4: SOMETHING DIFFERENT (MMR Diversity) -->
+      <div class="shelf-container">
+        <div class="shelf-header">
+          <div>
+            <h2 class="shelf-title"><span>🎭</span> Something Different</h2>
+            <p class="shelf-subtitle">Exploratory diversity re-ranking via Maximal Marginal Relevance (MMR).</p>
+          </div>
+        </div>
+        <div class="cards-carousel-row" id="shelfSomethingDifferent">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------
+         VIEW 2: DISCOVER (Exploration & "Surprise Me")
+         ------------------------------------------------------------------ -->
+    <section class="consumer-view-pane" id="view-discover">
+      <div class="consumer-hero-banner" style="text-align: center; padding: 3.5rem 2rem;">
+        <div class="consumer-greeting-lead">Serendipitous Exploration</div>
+        <h1 class="consumer-hero-heading">Expand Your Horizons</h1>
+        <p class="consumer-hero-sub" style="margin: 0 auto 2rem auto;">
+          Our recommendation engine uses high-entropy novelty filters to surface critically acclaimed titles outside your primary comfort zone.
+        </p>
+        <button class="btn-onboarding-primary" id="btnSurpriseMe" style="font-size: 1.1rem; padding: 0.9rem 2.2rem;">
+          <span>🎲</span> SURPRISE ME
+        </button>
+      </div>
+
+      <!-- Discover Shelves -->
+      <div class="shelf-container">
+        <div class="shelf-header">
+          <div>
+            <h2 class="shelf-title"><span>💎</span> Hidden Gems</h2>
+            <p class="shelf-subtitle">High rating-to-popularity ratio titles with unique thematic traits.</p>
+          </div>
+        </div>
+        <div class="cards-carousel-row" id="shelfHiddenGems">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div class="shelf-container">
+        <div class="shelf-header">
+          <div>
+            <h2 class="shelf-title"><span>🎧</span> Spotify Acoustic Moods</h2>
+            <p class="shelf-subtitle">High-dimensional continuous audio spaces matching different cognitive states.</p>
+          </div>
+        </div>
+        <div class="cards-carousel-row" id="shelfAcousticMoods">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------
+         VIEW 3: SEARCH & FILTERS
+         ------------------------------------------------------------------ -->
+    <section class="consumer-view-pane" id="view-search">
+      <div class="search-bar-wrapper">
+        <span class="search-icon-inside">🔍</span>
+        <input type="text" class="global-search-input" id="globalSearchInput" placeholder="Search movies, songs, artists, genres, or tags...">
+      </div>
+
+      <!-- Multi-Criteria Filter Bar -->
+      <div class="filter-pills-bar">
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Filter:</span>
+        <button class="choice-pill-btn active search-filter-genre" data-genre="all">All Genres</button>
+        <button class="choice-pill-btn search-filter-genre" data-genre="Sci-Fi">Sci-Fi</button>
+        <button class="choice-pill-btn search-filter-genre" data-genre="Action">Action</button>
+        <button class="choice-pill-btn search-filter-genre" data-genre="Drama">Drama</button>
+        <button class="choice-pill-btn search-filter-genre" data-genre="Comedy">Comedy</button>
+        <button class="choice-pill-btn search-filter-genre" data-genre="Thriller">Thriller</button>
+      </div>
+
+      <!-- Search Results Grid -->
+      <div class="cards-carousel-row" id="searchResultsGrid">
+        <!-- Results injected dynamically -->
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------
+         VIEW 4: MY PROFILE (Taste DNA & Library)
+         ------------------------------------------------------------------ -->
+    <section class="consumer-view-pane" id="view-profile">
+      <div class="profile-card-header">
+        <div class="profile-big-avatar" id="profileBigAvatar">A</div>
+        <div style="flex-grow: 1;">
+          <h2 style="font-family: var(--font-display); font-size: 2rem; color: #fff; margin-bottom: 0.3rem;" id="profileHeaderName">
+            Alex's Profile
+          </h2>
+          <p style="font-size: 0.9rem; color: var(--text-secondary);">
+            Member since 2026 · <span id="profileStatsCount">8 titles rated · 2 in watchlist</span>
+          </p>
+        </div>
+        <button class="choice-pill-btn" id="btnRerunOnboarding" style="font-size: 0.82rem;">
+          ⚙️ Retake Taste Quiz
+        </button>
+      </div>
+
+      <!-- Taste DNA Section -->
+      <div class="shelf-header">
+        <div>
+          <h3 class="shelf-title"><span>🧬</span> Your Taste DNA</h3>
+          <p class="shelf-subtitle">Algorithmically derived affinity vectors based on your explicit ratings and preferences.</p>
+        </div>
+      </div>
+
+      <div class="taste-dna-grid">
+        <div class="taste-dna-card">
+          <h4 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 1.2rem;">Movie Genre Affinity</h4>
+          <div class="dna-bar-row">
+            <span>Sci-Fi</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaSciFi" style="width: 95%;"></div></div>
+            <span style="font-family: monospace;" id="valDnaSciFi">95%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Action</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaAction" style="width: 85%;"></div></div>
+            <span style="font-family: monospace;" id="valDnaAction">85%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Drama</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaDrama" style="width: 70%;"></div></div>
+            <span style="font-family: monospace;" id="valDnaDrama">70%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Horror</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaHorror" style="width: 40%;"></div></div>
+            <span style="font-family: monospace;" id="valDnaHorror">40%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Comedy</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaComedy" style="width: 20%;"></div></div>
+            <span style="font-family: monospace;" id="valDnaComedy">20%</span>
+          </div>
+        </div>
+
+        <div class="taste-dna-card">
+          <h4 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 1.2rem;">Music Acoustic Profile</h4>
+          <div class="dna-bar-row">
+            <span>Energy</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaEnergy" style="width: 70%; background: var(--spotify-green);"></div></div>
+            <span style="font-family: monospace;" id="valDnaEnergy">70%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Valence (Mood)</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaValence" style="width: 65%; background: var(--spotify-green);"></div></div>
+            <span style="font-family: monospace;" id="valDnaValence">65%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Danceability</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaDance" style="width: 75%; background: var(--spotify-green);"></div></div>
+            <span style="font-family: monospace;" id="valDnaDance">75%</span>
+          </div>
+          <div class="dna-bar-row">
+            <span>Acousticness</span>
+            <div class="dna-progress-track"><div class="dna-progress-bar" id="dnaAcoustic" style="width: 15%; background: var(--spotify-green);"></div></div>
+            <span style="font-family: monospace;" id="valDnaAcoustic">15%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Library Tabs -->
+      <div class="shelf-container">
+        <div style="display: flex; gap: 0.8rem; margin-bottom: 1.5rem;">
+          <button class="choice-pill-btn active" id="tabLibraryRated">⭐ Rated Titles</button>
+          <button class="choice-pill-btn" id="tabLibraryWatchlist">📌 Watchlist</button>
+        </div>
+        <div class="cards-carousel-row" id="profileLibraryGrid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <!-- ====================================================================
+       ONBOARDING WIZARD OVERLAY
+       ==================================================================== -->
+  <div class="onboarding-overlay" id="onboardingModalOverlay">
+    <div class="onboarding-box">
+      <button class="btn-close-detail" id="btnOnboardSkip" style="top: 1rem; right: 1rem;">✕ Skip</button>
+      <!-- Progress Bar -->
+      <div class="onboarding-progress-bar" style="margin-top: 1rem;">
+        <div class="onboarding-progress-fill" id="onboardingFill"></div>
+      </div>
+
+      <!-- Screen 1: Welcome & Name -->
+      <div class="onboarding-step-pane active" id="onboardingStep1">
+        <h2 class="onboarding-title">What should we call you?</h2>
+        <p class="onboarding-subtitle">StreamPulse learns your individual taste to build a custom algorithm tailored to you.</p>
+
+        <div class="onboarding-input-group">
+          <input type="text" class="onboarding-text-input" id="inputOnboardName" value="Alex" placeholder="Enter your name...">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.6rem; display: block;">
+            What do you want to explore?
+          </span>
+          <div style="display: flex; gap: 0.8rem;">
+            <button class="choice-pill-btn active onboard-media-btn" data-type="both">🎬 &amp; 🎵 Both Movies &amp; Music</button>
+            <button class="choice-pill-btn onboard-media-btn" data-type="movies">🎬 Movies Only</button>
+            <button class="choice-pill-btn onboard-media-btn" data-type="music">🎵 Music Only</button>
+          </div>
+        </div>
+
+        <div class="onboarding-btn-row">
+          <div></div>
+          <button class="btn-onboarding-primary" id="btnOnboardNext1">Next Step ➔</button>
+        </div>
+      </div>
+
+      <!-- Screen 2: Choose Interests -->
+      <div class="onboarding-step-pane" id="onboardingStep2">
+        <h2 class="onboarding-title">What are you into?</h2>
+        <p class="onboarding-subtitle">Select your favorite movie genres and set your general music vibe.</p>
+
+        <div style="margin-bottom: 1.5rem;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.6rem; display: block;">
+            Favorite Movie &amp; Series Genres
+          </span>
+          <div class="pill-selection-grid">
+            <button class="choice-pill-btn active onboard-genre-pill" data-genre="Sci-Fi">🚀 Sci-Fi</button>
+            <button class="choice-pill-btn active onboard-genre-pill" data-genre="Action">💥 Action</button>
+            <button class="choice-pill-btn active onboard-genre-pill" data-genre="Drama">🎭 Drama</button>
+            <button class="choice-pill-btn onboard-genre-pill" data-genre="Thriller">🔪 Thriller</button>
+            <button class="choice-pill-btn onboard-genre-pill" data-genre="Comedy">😂 Comedy</button>
+            <button class="choice-pill-btn onboard-genre-pill" data-genre="Romance">💖 Romance</button>
+            <button class="choice-pill-btn onboard-genre-pill" data-genre="Horror">👻 Horror</button>
+          </div>
+        </div>
+
+        <div class="onboarding-btn-row">
+          <button class="choice-pill-btn" id="btnOnboardBack2">← Back</button>
+          <button class="btn-onboarding-primary" id="btnOnboardNext2">Rate A Few Things ➔</button>
+        </div>
+      </div>
+
+      <!-- Screen 3: Starter Ratings -->
+      <div class="onboarding-step-pane" id="onboardingStep3">
+        <h2 class="onboarding-title">Rate a few things.</h2>
+        <p class="onboarding-subtitle">Give 1-5 stars to titles you know. This jump-starts your collaborative filtering matrix.</p>
+
+        <div class="starter-rating-list" id="onboardStarterList">
+          <!-- Starter rows injected dynamically -->
+        </div>
+
+        <div class="onboarding-btn-row">
+          <button class="choice-pill-btn" id="btnOnboardBack3">← Back</button>
+          <button class="btn-onboarding-primary" id="btnOnboardFinish">
+            ✨ Generate My Feed ➔
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       CINEMATIC DETAIL MODAL & "WHY RECOMMENDED?" BRIDGE
+       ==================================================================== -->
+  <div class="detail-modal-overlay" id="detailModalOverlay">
+    <div class="detail-modal-box">
+      <div class="detail-hero-cover" id="detailHeroCover">
+        <button class="btn-close-detail" id="btnCloseDetail">✕ Close (ESC)</button>
+        <span class="card-match-badge" id="detailMatchBadge" style="width: fit-content; margin-bottom: 0.5rem;">96% MATCH</span>
+        <h2 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: #fff;" id="detailTitle">
+          Interstellar
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;" id="detailMetaLine">
+          2014 · 2h 49m · Sci-Fi, Drama
+        </p>
+      </div>
+
+      <div class="detail-body-content">
+        <p style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.5rem;" id="detailDescription">
+          When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot is tasked to pilot a spacecraft to find a new home for humanity.
+        </p>
+
+        <!-- Rate & Watchlist Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); padding: 1rem 1.4rem; border-radius: 12px; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">YOUR RATING:</span>
+            <div class="star-rating-control" id="detailStarControl">
+              <button class="star-btn" data-val="1">★</button>
+              <button class="star-btn" data-val="2">★</button>
+              <button class="star-btn" data-val="3">★</button>
+              <button class="star-btn" data-val="4">★</button>
+              <button class="star-btn" data-val="5">★</button>
+            </div>
+          </div>
+          <button class="btn-watchlist-toggle" id="btnDetailWatchlist" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+            + Add to Watchlist
+          </button>
+        </div>
+
+        <!-- Signature "Why Recommended?" Section -->
+        <div class="detail-why-box">
+          <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 0.4rem;">
+            WHY WE RECOMMENDED THIS
+          </h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">
+            Transparent mathematical score breakdown for your profile:
+          </p>
+
+          <div class="why-score-meter">
+            <div class="meter-cf" id="meterCf" style="width: 52%;"></div>
+            <div class="meter-genre" id="meterGenre" style="width: 34%;"></div>
+            <div class="meter-pop" id="meterPop" style="width: 14%;"></div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-family: monospace; font-size: 0.78rem; margin-bottom: 1rem;">
+            <span style="color: #ff858d;" id="labelCfPct">Collaborative: 52%</span>
+            <span style="color: #00F0FF;" id="labelGenrePct">Content / Genre: 34%</span>
+            <span style="color: #facc15;" id="labelPopPct">Global Acclaim: 14%</span>
+          </div>
+
+          <div style="font-size: 0.88rem; color: #e2e8f0; line-height: 1.8;" id="detailReasonsList">
+            <div>✓ Similar users with your taste profile rated this 5.0★.</div>
+            <div>✓ Matches your strong preferences for Sci-Fi &amp; Drama.</div>
+            <div>✓ High global rating (8.7/10).</div>
+          </div>
+
+          <!-- Expandable: SEE HOW THE ALGORITHM CALCULATED THIS -->
+          <div style="margin-top: 1rem;">
+            <button class="choice-pill-btn" id="btnToggleMathDrawer" style="font-size: 0.78rem; font-family: monospace; padding: 0.35rem 0.8rem;">
+              📐 SEE HOW THE ALGORITHM CALCULATED THIS ▾
+            </button>
+            <div class="detail-math-drawer" id="detailMathDrawer">
+              <div style="font-family: monospace; font-size: 0.82rem; color: var(--accent-cyan); line-height: 1.8;" id="detailMathBreakdown">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       VIVA DEFENSE FULLSCREEN OVERLAY
+       ==================================================================== -->
+  <div class="viva-overlay" id="vivaOverlay">
+    <div class="viva-header">
+      <div class="logo-badge">
+        <span class="logo-main"><span class="logo-pulse">CS-DAA</span></span>
+        <span class="logo-sub">Viva Defense Presentation Deck</span>
+      </div>
+      <div class="viva-progress" id="vivaProgress" style="font-family: monospace; font-size: 0.9rem; color: var(--accent-cyan);">Slide 1 of 6</div>
+      <button class="btn-close-viva" id="btnCloseViva">✕ Close (ESC)</button>
+    </div>
+
+    <div class="viva-body">
+      <div class="viva-slide" id="vivaSlideContent"></div>
+    </div>
+
+    <div class="viva-footer">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">Use [←] and [→] arrow keys or buttons to navigate slides</span>
+      <div class="viva-controls" style="display: flex; gap: 0.8rem;">
+        <button class="choice-pill-btn" id="btnVivaPrev">← Previous</button>
+        <button class="btn-onboarding-primary" id="btnVivaNext" style="padding: 0.45rem 1.2rem; font-size: 0.85rem;">Next Slide →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       ADAPTIVE FLOATING TOAST NOTIFICATION CONTAINER
+       ==================================================================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ====================================================================
+       CONSUMER FOOTER
+       ==================================================================== -->
+  <footer class="consumer-footer">
+    <div class="footer-inner-grid">
+      <div>
+        <div class="footer-tagline" style="font-size: 1.1rem; letter-spacing: -0.2px;">
+          How Netflix/Spotify Recommendation Algorithms Choose Content for You
+        </div>
+        <p class="footer-copy" style="margin-top: 0.3rem;">
+          Design and Analysis of Algorithms (CS-DAA) Academic Research Project · Academic Year 2026
+        </p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <button class="choice-pill-btn" id="btnFooterViva">
+          📽️ Viva Defense
+        </button>
+        <a href="report.html" target="_blank" class="choice-pill-btn" style="text-decoration: none; color: #fff;">
+          📄 Academic Report
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Universal Production Bundle -->
+  <script src="js/bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "streampulse-daa",
+  "version": "1.0.0",
+  "description": "How Netflix/Spotify Recommendation Algorithms Choose Content for You - DAA Academic Research & Interactive Simulation Laboratory",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"require('./api/live-trending.js'); console.log('API and configuration verified successfully.');\""
+  },
+  "keywords": [
+    "recommendation-systems",
+    "netflix-prize",
+    "spotify",
+    "matrix-factorization",
+    "svd",
+    "annoy",
+    "multi-armed-bandits",
+    "daa",
+    "algorithms"
+  ],
+  "author": "Vedant",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

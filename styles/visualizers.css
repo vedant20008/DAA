@@ -1,0 +1,404 @@
+/* ==========================================================================
+   StreamPulse: Visualizers & Interactive Canvas Styles
+   Matrix Table, Vector Projection Canvas, Bandit Visualizer, Inspector Panels
+   ========================================================================== */
+
+/* Matrix Table Wrapper */
+.matrix-visualizer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.matrix-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(10, 14, 22, 0.8);
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 780px;
+}
+
+.matrix-corner-header {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-subtle);
+  border-right: 2px solid var(--border-subtle);
+}
+
+.matrix-col-header {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.8rem 0.6rem;
+  text-align: center;
+  border-bottom: 2px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.matrix-row-header {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+  border-right: 2px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.matrix-row-header.active-user {
+  color: #ff858d;
+  background: rgba(229, 9, 20, 0.15);
+  border-left: 3px solid var(--netflix-red);
+}
+
+.matrix-cell {
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.matrix-cell:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.03);
+}
+
+.matrix-cell.selected {
+  outline: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.1) !important;
+}
+
+.cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.cell-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.cell-val.actual {
+  color: #facc15; /* Star Gold */
+}
+
+.cell-val.pred {
+  color: #ff7675; /* SVD Predicted Red/Pink */
+}
+
+.star-icon {
+  color: #facc15;
+  font-size: 0.75rem;
+}
+
+.sparkle-icon {
+  font-size: 0.75rem;
+}
+
+.cell-sub {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 0.1rem;
+}
+
+.cell-sub.pred-tag {
+  color: #ff858d;
+  font-weight: 600;
+}
+
+/* Cell Inspector Modal / Card */
+.inspector-card {
+  background: rgba(14, 18, 28, 0.95);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--netflix-red);
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  backdrop-filter: var(--glass-blur);
+  margin-top: 1rem;
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.inspector-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.math-decomposition {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  margin: 0.6rem 0;
+}
+
+.math-chip {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.math-chip.result {
+  background: rgba(229, 9, 20, 0.2);
+  border-color: var(--netflix-red);
+  color: #ff858d;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Canvas Visualizer Containers (Vector Space & Loss Curve)
+   ========================================================================== */
+
+.visualizer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.5rem;
+  backdrop-filter: var(--glass-blur);
+  margin-bottom: 1.5rem;
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: #080a0f;
+}
+
+.canvas-responsive {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.canvas-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.canvas-legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* ==========================================================================
+   Bandit Dynamic Artwork Gallery
+   ========================================================================== */
+
+.bandit-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.bandit-arm-card {
+  background: rgba(10, 14, 22, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem;
+  position: relative;
+  transition: var(--transition-normal);
+}
+
+.bandit-arm-card.winning {
+  border-color: var(--netflix-red);
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+}
+
+.arm-badge {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.arm-badge.optimal {
+  background: rgba(229, 9, 20, 0.25);
+  color: #ff858d;
+  border: 1px solid var(--netflix-red);
+}
+
+.arm-badge.regular {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+.arm-preview-art {
+  height: 110px;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+.arm-stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.4rem;
+}
+
+.arm-stat-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Viva Voce Defense Deck Overlay */
+.viva-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 6, 10, 0.96);
+  backdrop-filter: blur(24px);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  padding: 2.5rem 3.5rem;
+}
+
+.viva-overlay.active {
+  display: flex;
+}
+
+.viva-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.viva-body {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viva-slide {
+  max-width: 850px;
+  width: 100%;
+}
+
+.viva-slide h3 {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+}
+
+.viva-slide h2 {
+  font-family: var(--font-display);
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.viva-slide p {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.viva-slide ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #cbd5e1;
+  line-height: 1.8;
+}
+
+.viva-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.2rem;
+}
+
+.btn-close-viva {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: #ffffff;
+  font-size: 0.85rem;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-close-viva:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
